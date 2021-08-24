@@ -110,6 +110,7 @@ class Query(graphene.ObjectType):
 
     def resolve_user(self, info, **kwargs):
         id = kwargs.get('id')
+        print('authorization: ',info.context.headers['authorization'])
         return get_user_model().objects.get(id=from_global_id(id)[1])
 
     def resolve_all_users(self, info, **kwargs):
