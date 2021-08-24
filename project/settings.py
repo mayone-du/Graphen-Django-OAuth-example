@@ -41,7 +41,6 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
-    'graphql_jwt.refresh_token.apps.RefreshTokenConfig',
     'graphene_django',
     'api.apps.ApiConfig',
     'corsheaders',
@@ -59,14 +58,6 @@ MIDDLEWARE = [
 ]
 
 ROOT_URLCONF = 'project.urls'
-
-GRAPHQL_JWT = {
-    'JWT_VERIFY_EXPIRATION': True,
-    'JWT_LONG_RUNNING_REFRESH_TOKEN': True,
-    'JWT_EXPIRATION_DELTA': timedelta(minutes=5),
-    'JWT_REFRESH_EXPIRATION_DELTA': timedelta(days=7),
-}
-
 
 CORS_ALLOWED_ORIGINS = [
     "http://localhost:3000",
@@ -113,15 +104,10 @@ DATABASES = {
 }
 
 
-GRAPHENE = {'SCHEMA': 'project.schema.schema',
-            'MIDDLEWARE': [
-                'graphql_jwt.middleware.JSONWebTokenMiddleware',
-            ],
-            }
+GRAPHENE = {'SCHEMA': 'project.schema.schema'}
 
 
 AUTHENTICATION_BACKENDS = [
-    'graphql_jwt.backends.JSONWebTokenBackend',
     'django.contrib.auth.backends.ModelBackend',
 ]
 
@@ -177,13 +163,13 @@ MEDIA_ROOT = str(BASE_DIR / 'mediafiles')
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
 
-CLOUDINARY_STORAGE = {
-    'CLOUD_NAME': 'mayone-du',
-    'API_KEY': '969557674849524',
-    'API_SECRET': config("CLOUDINARY_API_SECRET"),
-}
+# CLOUDINARY_STORAGE = {
+#     'CLOUD_NAME': 'mayone-du',
+#     'API_KEY': '969557674849524',
+#     'API_SECRET': config("CLOUDINARY_API_SECRET"),
+# }
 
-DEFAULT_FILE_STORAGE = 'cloudinary_storage.storage.MediaCloudinaryStorage'
+# DEFAULT_FILE_STORAGE = 'cloudinary_storage.storage.MediaCloudinaryStorage'
 
 EMAIL_HOST = config('EMAIL_HOST')
 EMAIL_HOST_USER = config('EMAIL_HOST_USER')
