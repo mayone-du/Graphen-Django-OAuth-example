@@ -4,9 +4,9 @@ ENV PYTHONUNBUFFERED=1
 ENV PYTHONDONTWRITEBYTECODE=1
 
 
-WORKDIR /workspace
+WORKDIR /workdir
 
-COPY requirements.txt /workspace/
+COPY requirements.txt /workdir/
 
 RUN \
   # pip自体のアップグレード

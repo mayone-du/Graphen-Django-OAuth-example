@@ -10,9 +10,9 @@ app 内はアプリ用のサンプル
 - pip freeze > requirements.txt
 - docker-compose up --build
 - docker-compose exec app bash
-- cd src
-- django-admin startproject sampleproject .
-- python manage.py startapp sampleapp
+- cd workdir
+- django-admin startproject project .
+- python manage.py startapp app
 - python manage.py makemigrations
 - python manage.py migrate
 - python manage.py createsuperuser
