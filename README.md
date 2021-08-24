@@ -34,6 +34,19 @@ EMAIL_HOST_USER
 EMAIL_HOST_PASSWOR=
 EMAIL_PORT
 
+#### sample
+
+DB_NAME=postgres
+DB_USER=postgres
+DB_HOST=db
+
+CLOUDINARY_API_SECRET=
+
+EMAIL_HOST=smtp.sendgrid.net
+EMAIL_HOST_USER=
+EMAIL_HOST_PASSWORD=
+EMAIL_PORT=587
+
 ## デプロイ（Heroku）
 
 - heroku config:push
