@@ -34,6 +34,7 @@ Django = "==3.2.4"
 Pillow = "==8.2.0"
 Rx = "==1.6.1"
 django-graphql-social-auth = "*"
+google-api-python-client = "*"
 
 [dev-packages]
 yapf = "*"
