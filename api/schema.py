@@ -1,4 +1,5 @@
 import graphene
+import graphql_social_auth
 from django.contrib.auth import get_user_model
 from django.core.mail import send_mail
 from django.core.signing import dumps, loads
@@ -97,6 +98,7 @@ class CreateUserMutation(relay.ClientIDMutation):
 class Mutation(graphene.ObjectType):
     create_user = CreateUserMutation.Field()
     # create_profile = ProfileCreateMutation.Field()
+    social_auth = graphql_social_auth.SocialAuth.Field()
 
 
 class Query(graphene.ObjectType):
