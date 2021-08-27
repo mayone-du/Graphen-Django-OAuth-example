@@ -6,33 +6,33 @@ from django.db import models
 
 # Create your models here.
 
-def upload_avatar_path(instance, filename):
+def upload_task_path(instance, filename):
     ext = filename.split('.')[-1]
-    return '/'.join(['avatars', str(instance.target_user.id)+str(instance.profile_name)+str(".")+str(ext)])
+    return '/'.join(['tasks', str(instance.create_user.id)+str(instance.title)+str(".")+str(ext)])
 
 
 class UserManager(BaseUserManager):
     def create_user(self, username, email, password=None):
-
-        if not email:
-            raise ValueError('email is must')
-
-        user = self.model(email=self.normalize_email(email))
-        if username is not None:
-            user.username = username
-        user.set_password(password)
-        user.save(using=self._db)
-        print('user created!', email)
-        send_mail(subject='サンプルアプリ | 本登録のお知らせ', message=f'ユーザー作成時にメール送信しています' + email, from_email="sample@email.com",
-            recipient_list=[email], fail_silently=False)
-        return user
+        try:
+            if not email:
+                raise ValueError('email is must')
+            user = self.model(email=self.normalize_email(email))
+            if username is not None:
+                user.username = username
+            user.set_password(password)
+            user.save(using=self._db)
+            # ユーザー作成時にメールを送信
+            send_mail(subject='サンプルアプリ | 本登録のお知らせ', message=f'ユーザー作成時にメール送信しています' + email, from_email="sample@email.com",
+                recipient_list=[email], fail_silently=False)
+            return user
+        except:
+            raise ValueError('create_user_error')
 
     def create_superuser(self, email, password):
         user = self.create_user(email, password)
         user.is_staff = True
         user.is_superuser = True
         user.save(using=self._db)
-
         return user
 
 
@@ -40,7 +40,6 @@ class UserManager(BaseUserManager):
 class User(AbstractBaseUser, PermissionsMixin):
     username = models.CharField(max_length=100)
     email = models.EmailField(max_length=50, unique=True)
-    # TODO: ↓ユーザーの本登録をメール認証にするのであればデフォルトはFalseがいいかも
     is_active = models.BooleanField(default=True)
     is_staff = models.BooleanField(default=False)
     first_name = models.CharField(max_length=50, blank=True, null=True)
@@ -54,15 +53,16 @@ class User(AbstractBaseUser, PermissionsMixin):
         return self.email
 
 
-class Profile(models.Model):
-    target_user = models.OneToOneField(
+class Task(models.Model):
+    create_user = models.OneToOneField(
         settings.AUTH_USER_MODEL, related_name='target_user',
         on_delete=models.CASCADE
     )
-    profile_name = models.CharField(max_length=100)
-    profile_text = models.CharField(max_length=1000)
-    profile_image = models.ImageField(
-        blank=True, null=True, upload_to=upload_avatar_path)
+    title = models.CharField(max_length=1000, default='',null=False, blank=False)
+    task_image = models.ImageField(
+        blank=True, null=True, upload_to=upload_task_path)
+    is_done = models.BooleanField(null=False, blank=False, default=False)
+    created_at = models.DateTimeField(auto_now=True)
 
     def __str__(self):
-        return self.profile_name
+        return self.create_user
