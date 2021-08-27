@@ -11,6 +11,8 @@ from graphene_django.types import DjangoObjectType
 from graphene_file_upload.scalars import Upload
 from graphql_relay import from_global_id
 
+from api.validation import validate_token
+
 from .models import Profile, User
 
 
@@ -33,6 +35,7 @@ class CreateUserMutation(relay.ClientIDMutation):
 
     user = graphene.Field(UserNode)
 
+    @validate_token
     def mutate_and_get_payload(root, info, **input):
         user = User(
             email=input.get('email'),
@@ -109,30 +112,13 @@ class Query(graphene.ObjectType):
     # profile = graphene.Field(ProfileNode, id=graphene.NonNull(graphene.ID))
     # all_profiles = DjangoFilterConnectionField(ProfileNode)
 
-
+    @validate_token
     def resolve_user(self, info, **kwargs):
         id = kwargs.get('id')
-        token = info.context.headers['authorization']
-        print(token)
-        try:
-            # Specify the CLIENT_ID of the app that accesses the backend:
-            idinfo = id_token.verify_oauth2_token(token, requests.Request())
-            print(idinfo)
-            # Or, if multiple clients access the backend server:
-            # idinfo = id_token.verify_oauth2_token(token, requests.Request())
-            # if idinfo['aud'] not in [CLIENT_ID_1, CLIENT_ID_2, CLIENT_ID_3]:
-            #     raise ValueError('Could not verify audience.')
-
-            # If auth request is from a G Suite domain:
-            # if idinfo['hd'] != GSUITE_DOMAIN_NAME:
-            #     raise ValueError('Wrong hosted domain.')
-
-            # ID token is valid. Get the user's Google Account ID from the decoded token.
-            userid = idinfo['sub']
-        except ValueError:
-            # Invalid token
-            pass
-        return get_user_model().objects.get(id=from_global_id(id)[1])
+        # ↓デコレーターで追加されたemailにアクセス
+        email = kwargs.get('login_user_email')
+        return get_user_model().objects.get(email=email)
+        # return get_user_model().objects.get(id=from_global_id(id)[1])
 
     def resolve_all_users(self, info, **kwargs):
         return get_user_model().objects.all()
